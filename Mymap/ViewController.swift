@@ -9,17 +9,17 @@
 import UIKit
 import MapKit
 
+
+
 class ViewController: UIViewController ,UITextFieldDelegate , MKMapViewDelegate{
                                          //プロトコル
-
   override func viewDidLoad() {
     super.viewDidLoad()
     // Do any additional setup after loading the view, typically from a nib.
-  
-    //  テキストフィールドの通知を指定
-  inputText.delegate = self
-   
- 
+    
+    // Text Fieldのdelegate通知先を設定
+    inputText.delegate = self
+    
     // タップした時のアクションを追加
     let tapGesture = UITapGestureRecognizer(target: self, action: #selector(mapTapped(_:)))
     dispMap.addGestureRecognizer(tapGesture)
@@ -27,15 +27,18 @@ class ViewController: UIViewController ,UITextFieldDelegate , MKMapViewDelegate{
     // MapView Delegate設定
     dispMap.delegate = self
   }
-
+  
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
     // Dispose of any resources that can be recreated.
   }
+  
+
 
   @IBOutlet weak var inputText: UITextField!
 
   @IBOutlet weak var dispMap: MKMapView!
+
   
   func textFieldShouldReturn(_ textField: UITextField) -> Bool {
     //Bool型
@@ -51,26 +54,30 @@ class ViewController: UIViewController ,UITextFieldDelegate , MKMapViewDelegate{
     //入力された文字から情報を取得
     geocodeder.geocodeAddressString(searchKeyword!, completionHandler: { (Placemark:[CLPlacemark]?, error:Error?) in
       
-      //位置情報を取得する場合1軒目をの情報を取り出す
+      //位置情報を取得する場合1件目の情報を取り出す
       if let placemark = Placemark?[0] {
         
+        //位置情報から緯度経度をtargetCoordinateに取り出す
         if let tergetCoordnate = placemark.location?.coordinate{
           
+          // 緯度経度をデバックエリアに表示
           print(tergetCoordnate)
           
+          //ピンを作成
           let pin = MKPointAnnotation()
           
+          // ピンの置く場所に緯度経度を設定
           pin.coordinate = tergetCoordnate
           
+          // ピンのタイトルを設定
           pin.title = searchKeyword
           
-          
+          // ピンを地図に置く
           self.dispMap.addAnnotation(pin)
           
+          // 緯度経度を中心にして半径500mの範囲を表示
           self.dispMap.region = MKCoordinateRegionMakeWithDistance(tergetCoordnate ,500.0, 500.0 )
-          
-
-                  }
+                                      }
        
   
       }
@@ -78,6 +85,7 @@ class ViewController: UIViewController ,UITextFieldDelegate , MKMapViewDelegate{
     return true
     
     }
+  
   
   func mapTapped(_ sender: UITapGestureRecognizer){
     // タッチ終了か？
@@ -88,24 +96,33 @@ class ViewController: UIViewController ,UITextFieldDelegate , MKMapViewDelegate{
       let location = dispMap.convert(tapPoint, toCoordinateFrom: dispMap)
       print(location)
       
-      //指定した緯度経度を半径100mで円を描く
-      let pin = MKCircle(center: location, radius: 100.0)
-      dispMap.removeOverlays(dispMap.overlays)
-      dispMap.add(pin)
-    }
-  }
-    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-      //円のデザインを決める
-      let circleRenderer = MKCircleRenderer(overlay: overlay)
-      circleRenderer.strokeColor = UIColor.gray
-      circleRenderer.fillColor = UIColor.gray.withAlphaComponent(0.5)
-      circleRenderer.lineWidth = 1.0
       
+//      //指定した緯度経度を半径100mで円を描く
+//      let circle = MKCircle(center: location, radius: 100.0)
+//      dispMap.removeOverlays(dispMap.overlays)
+//      dispMap.add(circle)
+     
       
+      let pin2 = MKPointAnnotation()
+      dispMap.removeAnnotations(dispMap.annotations)
+      pin2.coordinate = location
+      dispMap.addAnnotation(pin2)
       
-      return circleRenderer
     }
     
+  }
+//    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+//      //円のデザインを決める
+//      let circleRenderer = MKCircleRenderer(overlay: overlay)
+//      circleRenderer.strokeColor = UIColor.gray
+//      circleRenderer.fillColor = UIColor.gray.withAlphaComponent(0.5)
+//      circleRenderer.lineWidth = 1.0
+//      
+//      
+//      
+//      return circleRenderer
+//    }
+  
   @IBAction func changeMapButtonAction(_ sender: Any) {
     if dispMap.mapType == .standard {
       dispMap.mapType = .satellite
@@ -120,3 +137,4 @@ class ViewController: UIViewController ,UITextFieldDelegate , MKMapViewDelegate{
     }
     }
 }
+
