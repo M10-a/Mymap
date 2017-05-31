@@ -9,13 +9,15 @@
 import UIKit
 import MapKit
 
-
-
 class ViewController: UIViewController ,UITextFieldDelegate , MKMapViewDelegate{
-                                         //プロトコル
+  //プロトコル
+  
   override func viewDidLoad() {
     super.viewDidLoad()
-    // Do any additional setup after loading the view, typically from a nib.
+  // Do any additional setup after loading the view, typically from a nib.
+   
+    dispMap.setCenter(dispMap.userLocation.coordinate, animated: true)
+    dispMap.userTrackingMode = MKUserTrackingMode.follow
     
     // Text Fieldのdelegate通知先を設定
     inputText.delegate = self
@@ -78,7 +80,6 @@ class ViewController: UIViewController ,UITextFieldDelegate , MKMapViewDelegate{
           // 緯度経度を中心にして半径500mの範囲を表示
           self.dispMap.region = MKCoordinateRegionMakeWithDistance(tergetCoordnate ,500.0, 500.0 )
                                       }
-       
   
       }
   })
@@ -107,6 +108,7 @@ class ViewController: UIViewController ,UITextFieldDelegate , MKMapViewDelegate{
       dispMap.removeAnnotations(dispMap.annotations)
       pin2.coordinate = location
       dispMap.addAnnotation(pin2)
+
       
     }
     
