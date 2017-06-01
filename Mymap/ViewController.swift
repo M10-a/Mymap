@@ -8,14 +8,33 @@
 
 import UIKit
 import MapKit
+import CoreLocation
 
-class ViewController: UIViewController ,UITextFieldDelegate , MKMapViewDelegate{
+class ViewController: UIViewController ,UITextFieldDelegate , MKMapViewDelegate , CLLocationManagerDelegate{
   //プロトコル
+  var locationManager: CLLocationManager!
   
   override func viewDidLoad() {
     super.viewDidLoad()
+   
   // Do any additional setup after loading the view, typically from a nib.
    
+ 
+    func setupLocationManager() {
+      locationManager = CLLocationManager()
+      guard let locationManager = locationManager else { return }
+      
+      locationManager.requestWhenInUseAuthorization()
+      
+      let status = CLLocationManager.authorizationStatus()
+      if status == .authorizedWhenInUse {
+        locationManager.distanceFilter = 10
+        locationManager.startUpdatingLocation()
+      }
+    }
+    
+    
+    
     dispMap.setCenter(dispMap.userLocation.coordinate, animated: true)
     dispMap.userTrackingMode = MKUserTrackingMode.follow
     
@@ -105,12 +124,14 @@ class ViewController: UIViewController ,UITextFieldDelegate , MKMapViewDelegate{
      
       
       let pin2 = MKPointAnnotation()
-      dispMap.removeAnnotations(dispMap.annotations)
+     dispMap.removeAnnotations(dispMap.annotations)
       pin2.coordinate = location
       dispMap.addAnnotation(pin2)
-
+    
       
     }
+
+      
     
   }
 //    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {

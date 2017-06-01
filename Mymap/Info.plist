@@ -43,5 +43,7 @@
 	</array>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>位置情報</string>
+	<key>Location When In Use Usage Description</key>
+	<string>位置情報を取得します</string>
 </dict>
 </plist>
